@@ -1,0 +1,443 @@
+<html><head></head><body><div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a href="https://github.com/maxogden/yo-yo#readme">yo-yo (v1.4.0)</a>
+</h1>
+<h4>A tiny library for building modular UI components using DOM diffing and ES6 tagged template literals</h4>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.yo-yo">module yo-yo</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.yo-yo.createElement">
+            function <span class="apidocSignatureSpan">yo-yo.</span>createElement
+            <span class="apidocSignatureSpan">(tag, props, children)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.yo-yo.default">
+            function <span class="apidocSignatureSpan">yo-yo.</span>default
+            <span class="apidocSignatureSpan">(strings)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.yo-yo.update">
+            function <span class="apidocSignatureSpan">yo-yo.</span>update
+            <span class="apidocSignatureSpan">(fromNode, toNode, opts)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.yo-yo" id="apidoc.module.yo-yo">module yo-yo</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.yo-yo.createElement" id="apidoc.element.yo-yo.createElement">
+        function <span class="apidocSignatureSpan">yo-yo.</span>createElement
+        <span class="apidocSignatureSpan">(tag, props, children)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function belCreateElement(tag, props, children) {
+  var el
+
+  // If an svg tag, it needs a namespace
+  if (SVG_TAGS.indexOf(tag) !== -1) {
+    props.namespace = SVGNS
+  }
+
+  // If we are using a namespace
+  var ns = false
+  if (props.namespace) {
+    ns = props.namespace
+    delete props.namespace
+  }
+
+  // Create the element
+  if (ns) {
+    el = document.createElementNS(ns, tag)
+  } else if (tag === COMMENT_TAG) {
+    return document.createComment(props.comment)
+  } else {
+    el = document.createElement(tag)
+  }
+
+  // If adding onload events
+  if (props.onload || props.onunload) {
+    var load = props.onload || function () {}
+    var unload = props.onunload || function () {}
+    onload(el, function belOnload () {
+      load(el)
+    }, function belOnunload () {
+      unload(el)
+    },
+    // We have to use non-standard `caller` to find who invokes `belCreateElement`
+    belCreateElement.caller.caller.caller)
+    delete props.onload
+    delete props.onunload
+  }
+
+  // Create the properties
+  for (var p in props) {
+    if (props.hasOwnProperty(p)) {
+      var key = p.toLowerCase()
+      var val = props[p]
+      // Normalize className
+      if (key === 'classname') {
+        key = 'class'
+        p = 'class'
+      }
+      // The for attribute gets transformed to htmlFor, but we just set as for
+      if (p === 'htmlFor') {
+        p = 'for'
+      }
+      // If a property is boolean, set itself to the key
+      if (BOOL_PROPS[key]) {
+        if (val === 'true') val = key
+        else if (val === 'false') continue
+      }
+      // If a property prefers being set directly vs setAttribute
+      if (key.slice(0, 2) === 'on') {
+        el[p] = val
+      } else {
+        if (ns) {
+          if (p === 'xlink:href') {
+            el.setAttributeNS(XLINKNS, p, val)
+          } else if (/^xmlns($|:)/i.test(p)) {
+            // skip xmlns definitions
+          } else {
+            el.setAttributeNS(null, p, val)
+          }
+        } else {
+          el.setAttribute(p, val)
+        }
+      }
+    }
+  }
+
+  function appendChild (childs) {
+    if (!Array.isArray(childs)) return
+    for (var i = 0; i &lt; childs.length; i++) {
+      var node = childs[i]
+      if (Array.isArray(node)) {
+        appendChild(node)
+        continue
+      }
+
+      if (typeof node === 'number' ||
+        typeof node === 'boolean' ||
+        typeof node === 'function' ||
+        node instanceof Date ||
+        node instanceof RegExp) {
+        node = node.toString()
+      }
+
+      if (typeof node === 'string') {
+        if (el.lastChild &amp;&amp; el.lastChild.nodeName === '#text') {
+          el.lastChild.nodeValue += node
+          continue
+        }
+        node = document.createTextNode(node)
+      }
+
+      if (node &amp;&amp; node.nodeType) {
+        el.appendChild(node)
+      }
+    }
+  }
+  appendChild(children)
+
+  return el
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+
+Running this produces `h1 {} [ 'hello world' ]`, which aren't yet DOM elements but have all the data you need to
+build your own DOM elements however you like. These three arguments, `tagName, attrs, children` are a sort of pseudo-standard used
+ by various DOM building libraries such as [virtual-dom](https://www.npmjs.com/package/virtual-dom), [hyperscript](https://www.npmjs
+.com/package/hyperscript) and [react](https://facebook.github.io/react/docs/glossary.html#react-elements), and now `hyperx` and `
+bel`.
+
+You can also use DOM elements not created using `hyperx` and `bel`:
+
+```js
+var yo = require('yo-yo')
+var vanillaElement = document.<span class="apidocCodeKeywordSpan">createElement</span>('h3')
+vanillaElement.textContent = 'Hello'
+
+var app = yo`&lt;div class="app"&gt;${vanillaElement} World&lt;/div&gt;`
+```
+
+Running the above sets `app` to an element with this HTML:
+...</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.yo-yo.default" id="apidoc.element.yo-yo.default">
+        function <span class="apidocSignatureSpan">yo-yo.</span>default
+        <span class="apidocSignatureSpan">(strings)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">default = function (strings) {
+  var state = TEXT, reg = ''
+  var arglen = arguments.length
+  var parts = []
+
+  for (var i = 0; i &lt; strings.length; i++) {
+    if (i &lt; arglen - 1) {
+      var arg = arguments[i+1]
+      var p = parse(strings[i])
+      var xstate = state
+      if (xstate === ATTR_VALUE_DQ) xstate = ATTR_VALUE
+      if (xstate === ATTR_VALUE_SQ) xstate = ATTR_VALUE
+      if (xstate === ATTR_VALUE_W) xstate = ATTR_VALUE
+      if (xstate === ATTR) xstate = ATTR_KEY
+      p.push([ VAR, xstate, arg ])
+      parts.push.apply(parts, p)
+    } else parts.push.apply(parts, parse(strings[i]))
+  }
+
+  var tree = [null,{},[]]
+  var stack = [[tree,-1]]
+  for (var i = 0; i &lt; parts.length; i++) {
+    var cur = stack[stack.length-1][0]
+    var p = parts[i], s = p[0]
+    if (s === OPEN &amp;&amp; /^\//.test(p[1])) {
+      var ix = stack[stack.length-1][1]
+      if (stack.length &gt; 1) {
+        stack.pop()
+        stack[stack.length-1][0][2][ix] = h(
+          cur[0], cur[1], cur[2].length ? cur[2] : undefined
+        )
+      }
+    } else if (s === OPEN) {
+      var c = [p[1],{},[]]
+      cur[2].push(c)
+      stack.push([c,cur[2].length-1])
+    } else if (s === ATTR_KEY || (s === VAR &amp;&amp; p[1] === ATTR_KEY)) {
+      var key = ''
+      var copyKey
+      for (; i &lt; parts.length; i++) {
+        if (parts[i][0] === ATTR_KEY) {
+          key = concat(key, parts[i][1])
+        } else if (parts[i][0] === VAR &amp;&amp; parts[i][1] === ATTR_KEY) {
+          if (typeof parts[i][2] === 'object' &amp;&amp; !key) {
+            for (copyKey in parts[i][2]) {
+              if (parts[i][2].hasOwnProperty(copyKey) &amp;&amp; !cur[1][copyKey]) {
+                cur[1][copyKey] = parts[i][2][copyKey]
+              }
+            }
+          } else {
+            key = concat(key, parts[i][2])
+          }
+        } else break
+      }
+      if (parts[i][0] === ATTR_EQ) i++
+      var j = i
+      for (; i &lt; parts.length; i++) {
+        if (parts[i][0] === ATTR_VALUE || parts[i][0] === ATTR_KEY) {
+          if (!cur[1][key]) cur[1][key] = strfn(parts[i][1])
+          else cur[1][key] = concat(cur[1][key], parts[i][1])
+        } else if (parts[i][0] === VAR
+        &amp;&amp; (parts[i][1] === ATTR_VALUE || parts[i][1] === ATTR_KEY)) {
+          if (!cur[1][key]) cur[1][key] = strfn(parts[i][2])
+          else cur[1][key] = concat(cur[1][key], parts[i][2])
+        } else {
+          if (key.length &amp;&amp; !cur[1][key] &amp;&amp; i === j
+          &amp;&amp; (parts[i][0] === CLOSE || parts[i][0] === ATTR_BREAK)) {
+            // https://html.spec.whatwg.org/multipage/infrastructure.html#boolean-attributes
+            // empty string is falsy, not well behaved value in browser
+            cur[1][key] = key.toLowerCase()
+          }
+          break
+        }
+      }
+    } else if (s === ATTR_KEY) {
+      cur[1][p[1]] = true
+    } else if (s === VAR &amp;&amp; p[1] === ATTR_KEY) {
+      cur[1][p[2]] = true
+    } else if (s === CLOSE) {
+      if (selfClosing(cur[0]) &amp;&amp; stack.length) {
+        var ix = stack[stack.length-1][1]
+        stack.pop()
+        stack[stack.length-1][0][2][ix] = h(
+          cur[0], cur[1], cur[2].length ? cur[2] : undefined
+        )
+      }
+    } else if (s === VAR &amp;&amp; p[1] === TEXT) {
+      if (p[2] === undefined || p[2] === null) p[2] = ''
+      else if (!p[2]) p[2] = concat('', p[2])
+      if (Array.isArray(p[2][0])) {
+        cur[2].push.apply(cur[2], p[2])
+      } else {
+        cur[2].push(p[2])
+      }
+    } else if (s === TEXT) {
+      cur[2].push(p[1])
+    } else if (s === ATTR_EQ || s === ATTR_BREAK) {
+      // no-op
+    } else {
+      throw new Error('unhandled: ' + s)
+    }
+  }
+
+  if (tree[2].length &gt; 1 &amp;&amp; /^\s*$/.test(tree[2][0])) {
+    tree[2].shift()
+  }
+
+  if (tree[2].length &gt; 2
+  || (tree[2].length === 2 &amp;&amp; /\S/.test(tree[2][1]))) {
+    throw new Error(
+      'multiple root elements must be wrapped in an enclosing tag'
+    )
+  }
+  if (Array.isArray(tree[2][0]) &amp;&amp; typeof tree[2][0][0] === 'string'
+  &amp;&amp; Array.isArray(tree[2][0][2])) {
+    tree[2][0] = h(tree[2][0][0], tree[2][0][1], tree[2][0][2])
+  }
+  return tree[2][0]
+
+  function parse (str) {
+    var res = []
+    if (state === ATTR_VALUE_W) sta ...</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.yo-yo.update" id="apidoc.element.yo-yo.update">
+        function <span class="apidocSignatureSpan">yo-yo.</span>update
+        <span class="apidocSignatureSpan">(fromNode, toNode, opts)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">update = function (fromNode, toNode, opts) {
+  if (!opts) opts = {}
+  if (opts.events !== false) {
+    if (!opts.onBeforeElUpdated) opts.onBeforeElUpdated = copier
+  }
+
+  return morphdom(fromNode, toNode, opts)
+
+  // morphdom only copies attributes. we decided we also wanted to copy events
+  // that can be set via attributes
+  function copier (f, t) {
+    // copy events:
+    var events = opts.events || defaultEvents
+    for (var i = 0; i &lt; events.length; i++) {
+      var ev = events[i]
+      if (t[ev]) { // if new element has a whitelisted attribute
+        f[ev] = t[ev] // update existing element
+      } else if (f[ev]) { // if existing element has it and new one doesnt
+        f[ev] = undefined // remove it from existing element
+      }
+    }
+    var oldValue = f.value
+    var newValue = t.value
+    // copy values for form elements
+    if ((f.nodeName === 'INPUT' &amp;&amp; f.type !== 'file') || f.nodeName === 'SELECT') {
+      if (!newValue) {
+        t.value = f.value
+      } else if (newValue !== oldValue) {
+        f.value = newValue
+      }
+    } else if (f.nodeName === 'TEXTAREA') {
+      if (t.getAttribute('value') === null) f.value = t.value
+    }
+  }
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+
+Returns the `yo` function. There is also a method on `yo` called `yo.update`.
+
+### yo\`template\`
+
+`yo` is a function designed to be used with [tagged template literals](#tagged-template-literals). If your template produces a string
+ containing an HTML element, the `yo` function will take it and produce a new DOM element that you can insert into the DOM.
+
+### yo.<span class="apidocCodeKeywordSpan">update</span>(targetElement, newElement, [opts])
+
+Efficiently updates the attributes and content of an element by [diffing and morphing](#morphdom) a new element onto an existing
+ target element. The two elements + their children should have the same 'shape', as the diff between `newElement` will
+ replace nodes in `targetElement`. `targetElement` will get efficiently updated with only the new DOM nodes from `newElement`, and
+ `newElement` can be discarded afterwards.
+
+Note that many properties of a DOM element **are ignored** when elements are updated. [morphdom](#morphdom) only copies the following
+ properties:
+
+- `node.firstChild`
+- `node.tagName`
+...</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
+</body></html>
