@@ -90,15 +90,6 @@
 
         <li>
 
-            <a class="apidocElementLiA" href="#apidoc.element.yo-yo.toString">
-            function <span class="apidocSignatureSpan">yo-yo.</span>toString
-            <span class="apidocSignatureSpan">()</span>
-            </a>
-
-        </li>
-
-        <li>
-
             <a class="apidocElementLiA" href="#apidoc.element.yo-yo.update">
             function <span class="apidocSignatureSpan">yo-yo.</span>update
             <span class="apidocSignatureSpan">(fromNode, toNode, opts)</span>
@@ -108,38 +99,30 @@
 
     </ol></li>
 
-    <li class="apidocModuleLi"><a href="#apidoc.module.yo-yo.createElement">module yo-yo.createElement</a><ol>
+    <li class="apidocModuleLi"><a href="#apidoc.module.yo-yo.default">module yo-yo.default</a><ol>
 
         <li>
 
-            <a class="apidocElementLiA" href="#apidoc.element.yo-yo.createElement.createElement">
-            function <span class="apidocSignatureSpan">yo-yo.</span>createElement
+            <a class="apidocElementLiA" href="#apidoc.element.yo-yo.default.default">
+            function <span class="apidocSignatureSpan">yo-yo.</span>default
+            <span class="apidocSignatureSpan">(strings)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.yo-yo.default.createElement">
+            function <span class="apidocSignatureSpan">yo-yo.default.</span>createElement
             <span class="apidocSignatureSpan">(tag, props, children)</span>
             </a>
 
         </li>
 
-    </ol></li>
-
-    <li class="apidocModuleLi"><a href="#apidoc.module.yo-yo.toString">module yo-yo.toString</a><ol>
-
         <li>
 
-            <a class="apidocElementLiA" href="#apidoc.element.yo-yo.toString.toString">
-            function <span class="apidocSignatureSpan">yo-yo.</span>toString
-            <span class="apidocSignatureSpan">()</span>
-            </a>
-
-        </li>
-
-    </ol></li>
-
-    <li class="apidocModuleLi"><a href="#apidoc.module.yo-yo.update">module yo-yo.update</a><ol>
-
-        <li>
-
-            <a class="apidocElementLiA" href="#apidoc.element.yo-yo.update.update">
-            function <span class="apidocSignatureSpan">yo-yo.</span>update
+            <a class="apidocElementLiA" href="#apidoc.element.yo-yo.default.update">
+            function <span class="apidocSignatureSpan">yo-yo.default.</span>update
             <span class="apidocSignatureSpan">(fromNode, toNode, opts)</span>
             </a>
 
@@ -564,21 +547,6 @@ Running the above sets `app` to an element with this HTML:
 
 
     <h2>
-        <a href="#apidoc.element.yo-yo.toString" id="apidoc.element.yo-yo.toString">
-        function <span class="apidocSignatureSpan">yo-yo.</span>toString
-        <span class="apidocSignatureSpan">()</span>
-        </a>
-    </h2>
-    <ul>
-    <li>description and source-code<pre class="apidocCodePre">toString = function () {
-    return text;
-}</pre></li>
-    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
-    </ul>
-
-
-
-    <h2>
         <a href="#apidoc.element.yo-yo.update" id="apidoc.element.yo-yo.update">
         function <span class="apidocSignatureSpan">yo-yo.</span>update
         <span class="apidocSignatureSpan">(fromNode, toNode, opts)</span>
@@ -622,25 +590,16 @@ Running the above sets `app` to an element with this HTML:
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">...
 
-Returns the `yo` function. There is also a method on `yo` called `yo.update`.
+function update () {
+  // add a new random number to our list
+  numbers.push(Math.random())
 
-### yo\`template\`
+  // construct a new list and efficiently diff+morph it into the one in the DOM
+  var newList = list(numbers, update)
+  yo.<span class="apidocCodeKeywordSpan">update</span>(el, newList)
+}
 
-`yo` is a function designed to be used with [tagged template literals](#tagged-template-literals). If your template produces a string
- containing an HTML element, the `yo` function will take it and produce a new DOM element that you can insert into the DOM.
-
-### yo.<span class="apidocCodeKeywordSpan">update</span>(targetElement, newElement, [opts])
-
-Efficiently updates the attributes and content of an element by [diffing and morphing](#morphdom) a new element onto an existing
- target element. The two elements + their children should have the same &#x27;shape&#x27;, as the diff between `newElement` will
- replace nodes in `targetElement`. `targetElement` will get efficiently updated with only the new DOM nodes from `newElement`, and
- `newElement` can be discarded afterwards.
-
-Note that many properties of a DOM element **are ignored** when elements are updated. [morphdom](#morphdom) only copies the following
- properties:
-
-- `node.firstChild`
-- `node.tagName`
+document.body.appendChild(el)
 ...</pre></li>
     </ul>
 
@@ -648,12 +607,146 @@ Note that many properties of a DOM element **are ignored** when elements are upd
 </div>
 
 <div class="apidocSectionDiv">
-<h1><a href="#apidoc.module.yo-yo.createElement" id="apidoc.module.yo-yo.createElement">module yo-yo.createElement</a></h1>
+<h1><a href="#apidoc.module.yo-yo.default" id="apidoc.module.yo-yo.default">module yo-yo.default</a></h1>
 
 
     <h2>
-        <a href="#apidoc.element.yo-yo.createElement.createElement" id="apidoc.element.yo-yo.createElement.createElement">
-        function <span class="apidocSignatureSpan">yo-yo.</span>createElement
+        <a href="#apidoc.element.yo-yo.default.default" id="apidoc.element.yo-yo.default.default">
+        function <span class="apidocSignatureSpan">yo-yo.</span>default
+        <span class="apidocSignatureSpan">(strings)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">default = function (strings) {
+  var state = TEXT, reg = &#x27;&#x27;
+  var arglen = arguments.length
+  var parts = []
+
+  for (var i = 0; i &#x3c; strings.length; i++) {
+    if (i &#x3c; arglen - 1) {
+      var arg = arguments[i+1]
+      var p = parse(strings[i])
+      var xstate = state
+      if (xstate === ATTR_VALUE_DQ) xstate = ATTR_VALUE
+      if (xstate === ATTR_VALUE_SQ) xstate = ATTR_VALUE
+      if (xstate === ATTR_VALUE_W) xstate = ATTR_VALUE
+      if (xstate === ATTR) xstate = ATTR_KEY
+      p.push([ VAR, xstate, arg ])
+      parts.push.apply(parts, p)
+    } else parts.push.apply(parts, parse(strings[i]))
+  }
+
+  var tree = [null,{},[]]
+  var stack = [[tree,-1]]
+  for (var i = 0; i &#x3c; parts.length; i++) {
+    var cur = stack[stack.length-1][0]
+    var p = parts[i], s = p[0]
+    if (s === OPEN &#x26;&#x26; /^\//.test(p[1])) {
+      var ix = stack[stack.length-1][1]
+      if (stack.length &#x3e; 1) {
+        stack.pop()
+        stack[stack.length-1][0][2][ix] = h(
+          cur[0], cur[1], cur[2].length ? cur[2] : undefined
+        )
+      }
+    } else if (s === OPEN) {
+      var c = [p[1],{},[]]
+      cur[2].push(c)
+      stack.push([c,cur[2].length-1])
+    } else if (s === ATTR_KEY || (s === VAR &#x26;&#x26; p[1] === ATTR_KEY)) {
+      var key = &#x27;&#x27;
+      var copyKey
+      for (; i &#x3c; parts.length; i++) {
+        if (parts[i][0] === ATTR_KEY) {
+          key = concat(key, parts[i][1])
+        } else if (parts[i][0] === VAR &#x26;&#x26; parts[i][1] === ATTR_KEY) {
+          if (typeof parts[i][2] === &#x27;object&#x27; &#x26;&#x26; !key) {
+            for (copyKey in parts[i][2]) {
+              if (parts[i][2].hasOwnProperty(copyKey) &#x26;&#x26; !cur[1][copyKey]) {
+                cur[1][copyKey] = parts[i][2][copyKey]
+              }
+            }
+          } else {
+            key = concat(key, parts[i][2])
+          }
+        } else break
+      }
+      if (parts[i][0] === ATTR_EQ) i++
+      var j = i
+      for (; i &#x3c; parts.length; i++) {
+        if (parts[i][0] === ATTR_VALUE || parts[i][0] === ATTR_KEY) {
+          if (!cur[1][key]) cur[1][key] = strfn(parts[i][1])
+          else cur[1][key] = concat(cur[1][key], parts[i][1])
+        } else if (parts[i][0] === VAR
+        &#x26;&#x26; (parts[i][1] === ATTR_VALUE || parts[i][1] === ATTR_KEY)) {
+          if (!cur[1][key]) cur[1][key] = strfn(parts[i][2])
+          else cur[1][key] = concat(cur[1][key], parts[i][2])
+        } else {
+          if (key.length &#x26;&#x26; !cur[1][key] &#x26;&#x26; i === j
+          &#x26;&#x26; (parts[i][0] === CLOSE || parts[i][0] === ATTR_BREAK)) {
+            // https://html.spec.whatwg.org/multipage/infrastructure.html#boolean-attributes
+            // empty string is falsy, not well behaved value in browser
+            cur[1][key] = key.toLowerCase()
+          }
+          break
+        }
+      }
+    } else if (s === ATTR_KEY) {
+      cur[1][p[1]] = true
+    } else if (s === VAR &#x26;&#x26; p[1] === ATTR_KEY) {
+      cur[1][p[2]] = true
+    } else if (s === CLOSE) {
+      if (selfClosing(cur[0]) &#x26;&#x26; stack.length) {
+        var ix = stack[stack.length-1][1]
+        stack.pop()
+        stack[stack.length-1][0][2][ix] = h(
+          cur[0], cur[1], cur[2].length ? cur[2] : undefined
+        )
+      }
+    } else if (s === VAR &#x26;&#x26; p[1] === TEXT) {
+      if (p[2] === undefined || p[2] === null) p[2] = &#x27;&#x27;
+      else if (!p[2]) p[2] = concat(&#x27;&#x27;, p[2])
+      if (Array.isArray(p[2][0])) {
+        cur[2].push.apply(cur[2], p[2])
+      } else {
+        cur[2].push(p[2])
+      }
+    } else if (s === TEXT) {
+      cur[2].push(p[1])
+    } else if (s === ATTR_EQ || s === ATTR_BREAK) {
+      // no-op
+    } else {
+      throw new Error(&#x27;unhandled: &#x27; + s)
+    }
+  }
+
+  if (tree[2].length &#x3e; 1 &#x26;&#x26; /^\s*$/.test(tree[2][0])) {
+    tree[2].shift()
+  }
+
+  if (tree[2].length &#x3e; 2
+  || (tree[2].length === 2 &#x26;&#x26; /\S/.test(tree[2][1]))) {
+    throw new Error(
+      &#x27;multiple root elements must be wrapped in an enclosing tag&#x27;
+    )
+  }
+  if (Array.isArray(tree[2][0]) &#x26;&#x26; typeof tree[2][0][0] === &#x27;string&#x27;
+  &#x26;&#x26; Array.isArray(tree[2][0][2])) {
+    tree[2][0] = h(tree[2][0][0], tree[2][0][1], tree[2][0][2])
+  }
+  return tree[2][0]
+
+  function parse (str) {
+    var res = []
+    if (state === ATTR_VALUE_W) sta ...</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.yo-yo.default.createElement" id="apidoc.element.yo-yo.default.createElement">
+        function <span class="apidocSignatureSpan">yo-yo.default.</span>createElement
         <span class="apidocSignatureSpan">(tag, props, children)</span>
         </a>
     </h2>
@@ -792,33 +885,10 @@ Running the above sets `app` to an element with this HTML:
     </ul>
 
 
-</div>
-
-<div class="apidocSectionDiv">
-<h1><a href="#apidoc.module.yo-yo.toString" id="apidoc.module.yo-yo.toString">module yo-yo.toString</a></h1>
-
 
     <h2>
-        <a href="#apidoc.element.yo-yo.toString.toString" id="apidoc.element.yo-yo.toString.toString">
-        function <span class="apidocSignatureSpan">yo-yo.</span>toString
-        <span class="apidocSignatureSpan">()</span>
-        </a>
-    </h2>
-    <ul>
-    <li>description and source-code<pre class="apidocCodePre">function toString() { [native code] }</pre></li>
-    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
-    </ul>
-
-
-</div>
-
-<div class="apidocSectionDiv">
-<h1><a href="#apidoc.module.yo-yo.update" id="apidoc.module.yo-yo.update">module yo-yo.update</a></h1>
-
-
-    <h2>
-        <a href="#apidoc.element.yo-yo.update.update" id="apidoc.element.yo-yo.update.update">
-        function <span class="apidocSignatureSpan">yo-yo.</span>update
+        <a href="#apidoc.element.yo-yo.default.update" id="apidoc.element.yo-yo.default.update">
+        function <span class="apidocSignatureSpan">yo-yo.default.</span>update
         <span class="apidocSignatureSpan">(fromNode, toNode, opts)</span>
         </a>
     </h2>
@@ -860,25 +930,16 @@ Running the above sets `app` to an element with this HTML:
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">...
 
-Returns the `yo` function. There is also a method on `yo` called `yo.update`.
+function update () {
+  // add a new random number to our list
+  numbers.push(Math.random())
 
-### yo\`template\`
+  // construct a new list and efficiently diff+morph it into the one in the DOM
+  var newList = list(numbers, update)
+  yo.<span class="apidocCodeKeywordSpan">update</span>(el, newList)
+}
 
-`yo` is a function designed to be used with [tagged template literals](#tagged-template-literals). If your template produces a string
- containing an HTML element, the `yo` function will take it and produce a new DOM element that you can insert into the DOM.
-
-### yo.<span class="apidocCodeKeywordSpan">update</span>(targetElement, newElement, [opts])
-
-Efficiently updates the attributes and content of an element by [diffing and morphing](#morphdom) a new element onto an existing
- target element. The two elements + their children should have the same &#x27;shape&#x27;, as the diff between `newElement` will
- replace nodes in `targetElement`. `targetElement` will get efficiently updated with only the new DOM nodes from `newElement`, and
- `newElement` can be discarded afterwards.
-
-Note that many properties of a DOM element **are ignored** when elements are updated. [morphdom](#morphdom) only copies the following
- properties:
-
-- `node.firstChild`
-- `node.tagName`
+document.body.appendChild(el)
 ...</pre></li>
     </ul>
 

@@ -6,7 +6,7 @@
 <tspan x="10" y="58">node_modules</tspan>
 <tspan x="10" y="74">└─┬ yo-yo@1.4.0 </tspan>
 <tspan x="10" y="90">  ├─┬ bel@4.6.0 </tspan>
-<tspan x="10" y="106">  │ ├─┬ global@4.3.1 </tspan>
+<tspan x="10" y="106">  │ ├─┬ global@4.3.2 </tspan>
 <tspan x="10" y="122">  │ │ ├─┬ min-document@2.19.0 </tspan>
 <tspan x="10" y="138">  │ │ │ └── dom-walk@0.1.1 </tspan>
 <tspan x="10" y="154">  │ │ └── process@0.5.2 </tspan>
