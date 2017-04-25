@@ -1,4 +1,7 @@
-# api documentation for  [yo-yo (v1.4.0)](https://github.com/maxogden/yo-yo#readme)  [![npm package](https://img.shields.io/npm/v/npmdoc-yo-yo.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-yo-yo) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-yo-yo.svg)](https://travis-ci.org/npmdoc/node-npmdoc-yo-yo)
+# npmdoc-yo-yo
+
+#### basic api documentation for  [yo-yo (v1.4.0)](https://github.com/maxogden/yo-yo#readme)  [![npm package](https://img.shields.io/npm/v/npmdoc-yo-yo.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-yo-yo) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-yo-yo.svg)](https://travis-ci.org/npmdoc/node-npmdoc-yo-yo)
+
 #### A tiny library for building modular UI components using DOM diffing and ES6 tagged template literals
 
 [![NPM](https://nodei.co/npm/yo-yo.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/yo-yo)
@@ -67,7 +70,8 @@
     "scripts": {
         "test": "wzrd test.js"
     },
-    "version": "1.4.0"
+    "version": "1.4.0",
+    "bin": {}
 }
 ```
 

@@ -1,7 +1,7 @@
 {
     "author": "kai zhu <kaizhu256@gmail.com>",
     "buildNpmdoc": "yo-yo",
-    "description": "api documentation for [yo-yo (v1.4.0)](https://github.com/maxogden/yo-yo#readme) [![npm package](https://img.shields.io/npm/v/npmdoc-yo-yo.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-yo-yo) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-yo-yo.svg)](https://travis-ci.org/npmdoc/node-npmdoc-yo-yo)",
+    "description": "#### basic api documentation for  [yo-yo (v1.4.0)](https://github.com/maxogden/yo-yo#readme)  [![npm package](https://img.shields.io/npm/v/npmdoc-yo-yo.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-yo-yo) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-yo-yo.svg)](https://travis-ci.org/npmdoc/node-npmdoc-yo-yo)",
     "devDependencies": {
         "electron-lite": "kaizhu256/node-electron-lite#alpha",
         "utility2": "kaizhu256/node-utility2#alpha",
